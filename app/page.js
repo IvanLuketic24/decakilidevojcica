@@ -9,10 +9,13 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 export default function Home() {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1); // korak 1 = unos, korak 2 = slike
   const [vote, setVote] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [results, setResults] = useState({ optionA: 0, optionB: 0 });
+  const [canShowResults, setCanShowResults] = useState(false);
+
+  const releaseTime = new Date("2025-11-26T20:00:00");
 
   const handleNext = () => {
     if (!name || !surname) {
@@ -35,33 +38,48 @@ export default function Home() {
       const data = await res.json();
       if (data.results) setResults(data.results);
     } catch (err) {
-      console.error(err);
-      alert("Greška prilikom slanja glasa");
+      console.error("Greška pri slanju glasa:", err);
     }
   };
 
   useEffect(() => {
+    const now = new Date();
+    setCanShowResults(now >= releaseTime);
+
     const fetchResults = async () => {
       try {
         const res = await fetch("/api/vote");
         const data = await res.json();
         if (data.results) setResults(data.results);
       } catch (err) {
-        console.error(err);
+        console.error("Greška pri čitanju glasova:", err);
       }
     };
 
-    if (submitted) fetchResults();
-  }, [submitted]);
+    fetchResults();
+    const interval = setInterval(fetchResults, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
-  const pieData = {
-    labels: ["Opcija A", "Opcija B"],
+  const data = {
+    labels: ["Dečak", "Devojčica"],
     datasets: [
       {
+        label: "Glasovi",
         data: [results.optionA, results.optionB],
         backgroundColor: ["#36A2EB", "#FF6384"],
       },
     ],
+  };
+
+  const getThankYouMessage = () => {
+    if (vote === "optionA") {
+      return "Znam da bi voleo/a da sam Dečak ali ja sam DEVOJCICA ❤️";
+    }
+    if (vote === "optionB") {
+      return "Jeste ja sam DEVOJCICA ❤️";
+    }
+    return `Hvala na glasu, ${name} ${surname}!`;
   };
 
   return (
@@ -71,27 +89,25 @@ export default function Home() {
         backgroundImage: 'url("/background.jpg")',
         backgroundSize: "cover",
         backgroundPosition: "center",
+        fontFamily: "Cursive, serif",
+        color: "#fff",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        fontFamily: "Arial, sans-serif",
-        color: "#fff",
         textAlign: "center",
         padding: "2rem",
       }}
     >
-      {/* Step 1: Unos imena i prezimena */}
-      {step === 1 && (
+      {step === 1 && !submitted && (
         <div
           style={{
             backgroundColor: "rgba(0,0,0,0.6)",
             padding: "3rem",
             borderRadius: "1rem",
+            display: "inline-block",
           }}
         >
-          <h1 style={{ fontSize: "2.5rem", marginBottom: "2rem" }}>
-            Unesi ime i prezime
-          </h1>
+          <h1 style={{ fontSize: "3rem", marginBottom: "2rem" }}>Unesite ime i prezime</h1>
           <input
             placeholder="Ime"
             value={name}
@@ -115,7 +131,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Step 2: Opcije */}
       {step === 2 && !submitted && (
         <div style={{ display: "flex", width: "100vw", height: "100vh" }}>
           <div
@@ -128,14 +143,12 @@ export default function Home() {
           >
             <img
               src="/optionA.jpg"
-              alt="Opcija A"
+              alt="Dečak"
               width={250}
-              height={250}
-              style={{ cursor: "pointer", objectFit: "cover" }}
+              style={{ cursor: "pointer" }}
               onClick={() => handleVote("optionA")}
             />
           </div>
-
           <div
             style={{
               flex: 1,
@@ -146,25 +159,25 @@ export default function Home() {
           >
             <img
               src="/optionB.jpg"
-              alt="Opcija B"
+              alt="Devojčica"
               width={250}
-              height={250}
-              style={{ cursor: "pointer", objectFit: "cover" }}
+              style={{ cursor: "pointer" }}
               onClick={() => handleVote("optionB")}
             />
           </div>
         </div>
       )}
 
-      {/* Step 3: Prikaz rezultata */}
       {submitted && (
         <div style={{ textAlign: "center" }}>
-          <h2 style={{ fontSize: "2rem", marginBottom: "1rem" }}>
-            Hvala na glasu, {name} {surname}!
-          </h2>
-          <div style={{ width: "300px", margin: "0 auto" }}>
-            <Pie data={pieData} />
-          </div>
+          <h2 style={{ fontSize: "2rem", marginBottom: "2rem" }}>{getThankYouMessage()}</h2>
+          {canShowResults ? (
+            <div style={{ maxWidth: "400px", margin: "0 auto" }}>
+              <Pie data={data} />
+            </div>
+          ) : (
+            <p style={{ fontSize: "1.2rem" }}>Rezultati će biti objavljeni u sredu u 20h.</p>
+          )}
         </div>
       )}
     </div>
