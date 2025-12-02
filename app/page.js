@@ -92,7 +92,7 @@ export default function Home() {
         backgroundImage: 'url("/background.jpg")',
         backgroundSize: "cover",
         backgroundPosition: "center",
-        fontFamily: "Cursive, serif",
+        fontFamily: "Arial, sans-serif",
         color: "#fff",
         display: "flex",
         justifyContent: "center",
@@ -106,9 +106,6 @@ export default function Home() {
       {!submitted && step === 1 && (
         <div
           style={{
-            backgroundColor: "rgba(0,0,0,0.6)",
-            padding: "3rem",
-            borderRadius: "1rem",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -116,7 +113,7 @@ export default function Home() {
             maxWidth: "500px",
           }}
         >
-          <h1 style={{ fontSize: "3rem", marginBottom: "2rem" }}>
+          <h1 style={{ fontSize: "2.5rem", marginBottom: "2rem" }}>
             Unesite ime i prezime
           </h1>
           <input
@@ -124,7 +121,7 @@ export default function Home() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             style={{
-              fontSize: "1.5rem",
+              fontSize: "1.2rem",
               marginBottom: "1rem",
               padding: "0.5rem",
               textAlign: "center",
@@ -136,7 +133,7 @@ export default function Home() {
             value={surname}
             onChange={(e) => setSurname(e.target.value)}
             style={{
-              fontSize: "1.5rem",
+              fontSize: "1.2rem",
               marginBottom: "2rem",
               padding: "0.5rem",
               textAlign: "center",
@@ -146,7 +143,7 @@ export default function Home() {
           <button
             onClick={handleNext}
             style={{
-              fontSize: "1.5rem",
+              fontSize: "1.2rem",
               padding: "0.5rem 2rem",
               cursor: "pointer",
             }}
@@ -172,7 +169,6 @@ export default function Home() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              backgroundColor: "rgba(0,0,0,0.3)",
             }}
           >
             <img
@@ -195,7 +191,6 @@ export default function Home() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              backgroundColor: "rgba(0,0,0,0.3)",
             }}
           >
             <img
@@ -216,13 +211,13 @@ export default function Home() {
       {/* Hvala i rezultati */}
       {submitted && (
         <div style={{ marginTop: "2rem" }}>
-          <h2 style={{ fontSize: "2rem", marginBottom: "1rem" }}>{getThankYouMessage()}</h2>
+          <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>{getThankYouMessage()}</h2>
           {canShowResults ? (
             <div style={{ maxWidth: "400px", margin: "0 auto" }}>
               <Pie data={data} />
             </div>
           ) : (
-            <p style={{ fontSize: "1.2rem" }}>Rezultati će biti objavljeni u sredu u 20h.</p>
+            <p style={{ fontSize: "1rem" }}>Rezultati će biti objavljeni u sredu u 20h.</p>
           )}
         </div>
       )}
