@@ -99,18 +99,23 @@ export default function Home() {
         alignItems: "center",
         textAlign: "center",
         padding: "2rem",
+        flexDirection: "column",
       }}
     >
       {!submitted && step === 1 && (
         <div
           style={{
             backgroundColor: "rgba(0,0,0,0.6)",
-            padding: "3rem",
+            padding: "2rem",
             borderRadius: "1rem",
-            display: "inline-block",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "90%",
+            maxWidth: "400px",
           }}
         >
-          <h1 style={{ fontSize: "3rem", marginBottom: "2rem" }}>
+          <h1 style={{ fontSize: "2.5rem", marginBottom: "1.5rem" }}>
             Unesite ime i prezime
           </h1>
           <input
@@ -118,10 +123,11 @@ export default function Home() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             style={{
-              fontSize: "1.5rem",
-              marginRight: "1rem",
+              fontSize: "1.2rem",
+              marginBottom: "1rem",
               padding: "0.5rem",
               textAlign: "center",
+              width: "100%",
             }}
           />
           <input
@@ -129,56 +135,61 @@ export default function Home() {
             value={surname}
             onChange={(e) => setSurname(e.target.value)}
             style={{
-              fontSize: "1.5rem",
+              fontSize: "1.2rem",
+              marginBottom: "1.5rem",
               padding: "0.5rem",
               textAlign: "center",
+              width: "100%",
             }}
           />
-          <div style={{ marginTop: "2rem" }}>
-            <button
-              onClick={handleNext}
-              style={{
-                fontSize: "1.5rem",
-                padding: "0.5rem 2rem",
-                cursor: "pointer",
-              }}
-            >
-              Dalje
-            </button>
-          </div>
+          <button
+            onClick={handleNext}
+            style={{
+              fontSize: "1.2rem",
+              padding: "0.5rem 2rem",
+              cursor: "pointer",
+            }}
+          >
+            Dalje
+          </button>
         </div>
       )}
 
       {!submitted && step === 2 && (
-        <div style={{ display: "flex", width: "100vw", justifyContent: "center", alignItems: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "2rem",
+            flexWrap: "wrap",
+            marginTop: "2rem",
+          }}
+        >
           <img
             src="/optionA.jpg"
             alt="Decak"
-            width={250}
-            height={250}
-            style={{ cursor: "pointer", marginRight: "2rem" }}
+            style={{ cursor: "pointer", width: "150px", height: "150px", objectFit: "cover" }}
             onClick={() => handleVote("optionA")}
           />
           <img
             src="/devojcica.jpg"
             alt="Devojcica"
-            width={250}
-            height={250}
-            style={{ cursor: "pointer" }}
+            style={{ cursor: "pointer", width: "150px", height: "150px", objectFit: "cover" }}
             onClick={() => handleVote("optionB")}
           />
         </div>
       )}
 
       {submitted && (
-        <div style={{ textAlign: "center" }}>
-          <h2 style={{ fontSize: "2rem" }}>{getThankYouMessage()}</h2>
+        <div style={{ marginTop: "2rem" }}>
+          <h2 style={{ fontSize: "1.8rem", marginBottom: "1rem" }}>{getThankYouMessage()}</h2>
           {canShowResults ? (
-            <div style={{ maxWidth: "500px", margin: "2rem auto" }}>
+            <div style={{ maxWidth: "400px", margin: "0 auto" }}>
               <Pie data={data} />
             </div>
           ) : (
-            <p style={{ fontSize: "1.5rem" }}>Rezultati će biti objavljeni u sredu u 20h.</p>
+            <p style={{ fontSize: "1.2rem" }}>Rezultati će biti objavljeni u sredu u 20h.</p>
           )}
         </div>
       )}
