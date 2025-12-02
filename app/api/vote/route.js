@@ -14,6 +14,7 @@ export async function POST(req) {
     }
 
     const key = `voter:${name.trim().toLowerCase()}_${surname.trim().toLowerCase()}`;
+
     const alreadyVoted = await kv.get(key);
 
     if (alreadyVoted) {
