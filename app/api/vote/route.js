@@ -1,74 +1,65 @@
-import { kv } from "@vercel/kv";
 import { NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
 
-export async function GET() {
-  try {
-    // Uzmi trenutne rezultate glasanja
-    const optionA = (await kv.get("optionA")) || 0;
-    const optionB = (await kv.get("optionB")) || 0;
+// lokacija fajla gde cuvamo glasove
+const filePath = path.join(process.cwd(), "data", "votes.json");
 
-    return NextResponse.json({ results: { optionA, optionB } });
-  } catch (err) {
-    console.error("Error reading votes:", err);
-    return NextResponse.json(
-      { error: "Greška prilikom čitanja glasova" },
-      { status: 500 }
-    );
+// Helper: ucitaj listu glasova ili napravi praznu
+function loadVotes() {
+  if (!fs.existsSync(filePath)) {
+    return [];
   }
+  const raw = fs.readFileSync(filePath);
+  return JSON.parse(raw);
 }
 
+// Helper: sacuvaj glasove u fajl
+function saveVotes(votes) {
+  fs.writeFileSync(filePath, JSON.stringify(votes, null, 2));
+}
+
+//
+// POST → korisnik glasa
+//
 export async function POST(req) {
-  try {
-    const { name, surname, vote } = await req.json();
+  const body = await req.json();
+  const { name, surname, vote } = body;
 
-    // Provera podataka
-    if (!name || !surname) {
-      return NextResponse.json(
-        { error: "Nedostaju podaci" },
-        { status: 400 }
-      );
-    }
-
-    if (!["optionA", "optionB"].includes(vote)) {
-      return NextResponse.json(
-        { error: "Nevažeća opcija" },
-        { status: 400 }
-      );
-    }
-
-    // Napravi jedinstveni key za korisnika (case-insensitive)
-    const key = `voter:${name.trim().toLowerCase()}_${surname
-      .trim()
-      .toLowerCase()}`;
-
-    // Provera da li je korisnik već glasao
-    const alreadyVoted = await kv.get(key);
-    if (alreadyVoted) {
-      return NextResponse.json(
-        { error: "Već ste glasali!" },
-        { status: 400 }
-      );
-    }
-
-    // Zabeleži da je korisnik glasao
-    await kv.set(key, true);
-
-    // Povećaj glas za izabranu opciju
-    await kv.incr(vote);
-
-    // Uzmi ažurirane rezultate
-    const optionA = (await kv.get("optionA")) || 0;
-    const optionB = (await kv.get("optionB")) || 0;
-
-    return NextResponse.json({
-      success: true,
-      results: { optionA, optionB },
-    });
-  } catch (err) {
-    console.error("Error sending vote:", err);
-    return NextResponse.json(
-      { error: "Greška prilikom slanja glasa" },
-      { status: 500 }
-    );
+  if (!name || !surname || !vote) {
+    return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
+
+  const votes = loadVotes();
+
+  // Sacuvaj glas
+  votes.push({
+    name,
+    surname,
+    vote,            // optionA ili optionB
+    timestamp: Date.now()
+  });
+
+  saveVotes(votes);
+
+  return NextResponse.json({ success: true });
+}
+
+//
+// GET → admin dobija listu glasova i statistiku
+//
+export async function GET() {
+  const votes = loadVotes();
+
+  // brojenje glasova
+  const optionA = votes.filter(v => v.vote === "optionA").length;
+  const optionB = votes.filter(v => v.vote === "optionB").length;
+
+  return NextResponse.json({
+    results: {
+      optionA,
+      optionB
+    },
+    allVotes: votes // cela lista za admin stranicu
+  });
 }
