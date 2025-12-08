@@ -1,65 +1,55 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
+import { promises as fs } from "fs";
 import path from "path";
 
-// lokacija fajla gde cuvamo glasove
 const filePath = path.join(process.cwd(), "data", "votes.json");
 
-// Helper: ucitaj listu glasova ili napravi praznu
-function loadVotes() {
-  if (!fs.existsSync(filePath)) {
+// Ucitavanje glasova iz fajla ili stvaranje praznog niza
+async function loadVotes() {
+  try {
+    const data = await fs.readFile(filePath, "utf8");
+    return JSON.parse(data);
+  } catch (e) {
     return [];
   }
-  const raw = fs.readFileSync(filePath);
-  return JSON.parse(raw);
 }
 
-// Helper: sacuvaj glasove u fajl
-function saveVotes(votes) {
-  fs.writeFileSync(filePath, JSON.stringify(votes, null, 2));
+// Cuvanje glasova
+async function saveVotes(votes) {
+  await fs.writeFile(filePath, JSON.stringify(votes, null, 2));
 }
 
-//
-// POST → korisnik glasa
-//
+// POST → glasanje
 export async function POST(req) {
-  const body = await req.json();
-  const { name, surname, vote } = body;
+  const { name, surname, vote } = await req.json();
 
   if (!name || !surname || !vote) {
     return NextResponse.json({ error: "Missing fields" }, { status: 400 });
   }
 
-  const votes = loadVotes();
+  const votes = await loadVotes();
 
-  // Sacuvaj glas
   votes.push({
     name,
     surname,
-    vote,            // optionA ili optionB
-    timestamp: Date.now()
+    vote,
+    timestamp: Date.now(),
   });
 
-  saveVotes(votes);
+  await saveVotes(votes);
 
   return NextResponse.json({ success: true });
 }
 
-//
-// GET → admin dobija listu glasova i statistiku
-//
+// GET → vraca sve glasove + brojanje
 export async function GET() {
-  const votes = loadVotes();
+  const votes = await loadVotes();
 
-  // brojenje glasova
   const optionA = votes.filter(v => v.vote === "optionA").length;
   const optionB = votes.filter(v => v.vote === "optionB").length;
 
   return NextResponse.json({
-    results: {
-      optionA,
-      optionB
-    },
-    allVotes: votes // cela lista za admin stranicu
+    results: { optionA, optionB },
+    allVotes: votes
   });
 }
