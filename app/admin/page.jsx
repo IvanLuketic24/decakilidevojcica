@@ -9,9 +9,8 @@ export default function AdminPage() {
     const fetchVotes = async () => {
       const res = await fetch("/api/vote");
       const data = await res.json();
-      setVotes(data.allVotes || []); // prilagodi prema tvojoj API strukturi
+      setVotes(data.allVotes || []);
     };
-
     fetchVotes();
   }, []);
 

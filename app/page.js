@@ -77,8 +77,10 @@ export default function Home() {
   };
 
   const getThankYouMessage = () => {
-    if (vote === "optionA") return "Znam da bi voleo/a da sam Dečak ali ja sam DEVOJČICA ❤️";
-    if (vote === "optionB") return "Jeste, ja sam DEVOJČICA ❤️";
+    if (vote === "optionA") 
+      return "Znam da bi možda voleo/a da sam Dečak ali ja sam DEVOJČICA ❤️";
+    if (vote === "optionB") 
+      return "Jeste, ja sam DEVOJČICA ❤️";
     return `Hvala na glasu, ${name} ${surname}!`;
   };
 
@@ -95,29 +97,26 @@ export default function Home() {
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
-        padding: "1rem",
+        padding: "2rem",
         flexDirection: "column",
       }}
     >
-      {/* PRVA STRANA */}
+      {/* PRVA STRANA - unos imena i prezimena */}
       {!submitted && step === 1 && (
         <div style={{ display: "flex", flexDirection: "column", width: "100%", maxWidth: "400px" }}>
           <h1 style={{ fontSize: "2rem", marginBottom: "1.5rem", color: "#000" }}>Unesite ime i prezime</h1>
-
           <input
             placeholder="Ime"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            style={{ fontSize: "1.1rem", marginBottom: "1rem", padding: "0.6rem", textAlign: "center", width: "100%", borderRadius: "8px", border: "none" }}
+            style={{ fontSize: "1.1rem", marginBottom: "1rem", padding: "0.6rem", textAlign: "center", width: "100%", borderRadius: "8px", border: "1px solid #ccc" }}
           />
-
           <input
             placeholder="Prezime"
             value={surname}
             onChange={(e) => setSurname(e.target.value)}
-            style={{ fontSize: "1.1rem", marginBottom: "1.5rem", padding: "0.6rem", textAlign: "center", width: "100%", borderRadius: "8px", border: "none" }}
+            style={{ fontSize: "1.1rem", marginBottom: "1.5rem", padding: "0.6rem", textAlign: "center", width: "100%", borderRadius: "8px", border: "1px solid #ccc" }}
           />
-
           <button
             onClick={handleNext}
             style={{ fontSize: "1.2rem", padding: "0.6rem 2rem", cursor: "pointer", borderRadius: "10px", border: "none", backgroundColor: "#36A2EB", color: "#000", fontWeight: "bold" }}
@@ -127,13 +126,12 @@ export default function Home() {
         </div>
       )}
 
-      {/* DRUGA STRANA */}
+      {/* DRUGA STRANA - izbor slike */}
       {!submitted && step === 2 && (
         <div style={{ width: "100%", maxWidth: "600px" }}>
           <h2 style={{ marginBottom: "1.5rem", fontSize: "1.5rem", color: "#000" }}>Šta misliš šta je? (klikni na sliku)</h2>
-
           <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
-            {/* LEVA */}
+            {/* Leva - Dečak */}
             <div style={{ flex: 1 }}>
               <h3 style={{ marginBottom: "0.5rem", color: "#000" }}>Dečak</h3>
               <img
@@ -142,8 +140,7 @@ export default function Home() {
                 onClick={() => handleVote("optionA")}
               />
             </div>
-
-            {/* DESNA */}
+            {/* Desna - Devojčica */}
             <div style={{ flex: 1 }}>
               <h3 style={{ marginBottom: "0.5rem", color: "#000" }}>Devojčica</h3>
               <img
@@ -156,11 +153,10 @@ export default function Home() {
         </div>
       )}
 
-      {/* PORUKA + REZULTATI */}
+      {/* HVALA + REZULTATI */}
       {submitted && (
         <div style={{ marginTop: "2rem", padding: "1rem" }}>
           <h2 style={{ fontSize: "1.4rem", marginBottom: "1rem", color: "#000" }}>{getThankYouMessage()}</h2>
-
           {canShowResults ? (
             <div style={{ maxWidth: "400px", margin: "0 auto" }}>
               <Pie data={data} />

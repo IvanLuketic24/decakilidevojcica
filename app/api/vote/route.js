@@ -4,7 +4,7 @@ import path from "path";
 
 const filePath = path.join(process.cwd(), "data", "votes.json");
 
-// Ucitavanje glasova iz fajla ili stvaranje praznog niza
+// Ucitavanje glasova
 async function loadVotes() {
   try {
     const data = await fs.readFile(filePath, "utf8");
@@ -41,7 +41,7 @@ export async function POST(req) {
   return NextResponse.json({ success: true });
 }
 
-// GET → vraca sve glasove + brojanje
+// GET → rezultati + lista glasova
 export async function GET() {
   const votes = await loadVotes();
 
