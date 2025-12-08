@@ -66,7 +66,7 @@ export default function Home() {
   }, []);
 
   const data = {
-    labels: ["Decak", "Devojcica"],
+    labels: ["Dečak", "Devojčica"],
     datasets: [
       {
         label: "Glasovi",
@@ -77,11 +77,8 @@ export default function Home() {
   };
 
   const getThankYouMessage = () => {
-    if (vote === "optionA") {
-      return "Znam da bi voleo/a da sam Decak ali ja sam DEVOJCICA ❤️";
-    } else if (vote === "optionB") {
-      return "Jeste, ja sam DEVOJCICA ❤️";
-    }
+    if (vote === "optionA") return "Znam da bi voleo/a da sam Dečak ali ja sam DEVOJČICA ❤️";
+    if (vote === "optionB") return "Jeste, ja sam DEVOJČICA ❤️";
     return `Hvala na glasu, ${name} ${surname}!`;
   };
 
@@ -93,131 +90,83 @@ export default function Home() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         fontFamily: "Arial, sans-serif",
-        color: "#fff",
+        color: "#000", // CRNI TEKST
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
         textAlign: "center",
-        padding: "2rem",
+        padding: "1rem",
         flexDirection: "column",
       }}
     >
-      {/* Prva strana - ime i prezime */}
+      {/* PRVA STRANA */}
       {!submitted && step === 1 && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "90%",
-            maxWidth: "500px",
-          }}
-        >
-          <h1 style={{ fontSize: "2.5rem", marginBottom: "2rem" }}>
-            Unesite ime i prezime
-          </h1>
+        <div style={{ display: "flex", flexDirection: "column", width: "100%", maxWidth: "400px" }}>
+          <h1 style={{ fontSize: "2rem", marginBottom: "1.5rem", color: "#000" }}>Unesite ime i prezime</h1>
+
           <input
             placeholder="Ime"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            style={{
-              fontSize: "1.2rem",
-              marginBottom: "1rem",
-              padding: "0.5rem",
-              textAlign: "center",
-              width: "100%",
-            }}
+            style={{ fontSize: "1.1rem", marginBottom: "1rem", padding: "0.6rem", textAlign: "center", width: "100%", borderRadius: "8px", border: "none" }}
           />
+
           <input
             placeholder="Prezime"
             value={surname}
             onChange={(e) => setSurname(e.target.value)}
-            style={{
-              fontSize: "1.2rem",
-              marginBottom: "2rem",
-              padding: "0.5rem",
-              textAlign: "center",
-              width: "100%",
-            }}
+            style={{ fontSize: "1.1rem", marginBottom: "1.5rem", padding: "0.6rem", textAlign: "center", width: "100%", borderRadius: "8px", border: "none" }}
           />
+
           <button
             onClick={handleNext}
-            style={{
-              fontSize: "1.2rem",
-              padding: "0.5rem 2rem",
-              cursor: "pointer",
-            }}
+            style={{ fontSize: "1.2rem", padding: "0.6rem 2rem", cursor: "pointer", borderRadius: "10px", border: "none", backgroundColor: "#36A2EB", color: "#000", fontWeight: "bold" }}
           >
             Dalje
           </button>
         </div>
       )}
 
-      {/* Druga strana - slike opcija */}
+      {/* DRUGA STRANA */}
       {!submitted && step === 2 && (
-        <div
-          style={{
-            display: "flex",
-            width: "100%",
-            height: "100vh",
-          }}
-        >
-          {/* Leva polovina */}
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <img
-              src="/optionA.jpg"
-              alt="Decak"
-              style={{
-                cursor: "pointer",
-                width: "250px",
-                height: "250px",
-                objectFit: "cover",
-              }}
-              onClick={() => handleVote("optionA")}
-            />
-          </div>
+        <div style={{ width: "100%", maxWidth: "600px" }}>
+          <h2 style={{ marginBottom: "1.5rem", fontSize: "1.5rem", color: "#000" }}>Šta misliš šta je? (klikni na sliku)</h2>
 
-          {/* Desna polovina */}
-          <div
-            style={{
-              flex: 1,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <img
-              src="/devojcica.jpg"
-              alt="Devojcica"
-              style={{
-                cursor: "pointer",
-                width: "250px",
-                height: "250px",
-                objectFit: "cover",
-              }}
-              onClick={() => handleVote("optionB")}
-            />
+          <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+            {/* LEVA */}
+            <div style={{ flex: 1 }}>
+              <h3 style={{ marginBottom: "0.5rem", color: "#000" }}>Dečak</h3>
+              <img
+                src="/optionA.jpg"
+                style={{ width: "100%", maxWidth: "220px", borderRadius: "12px", cursor: "pointer" }}
+                onClick={() => handleVote("optionA")}
+              />
+            </div>
+
+            {/* DESNA */}
+            <div style={{ flex: 1 }}>
+              <h3 style={{ marginBottom: "0.5rem", color: "#000" }}>Devojčica</h3>
+              <img
+                src="/devojcica.jpg"
+                style={{ width: "100%", maxWidth: "220px", borderRadius: "12px", cursor: "pointer" }}
+                onClick={() => handleVote("optionB")}
+              />
+            </div>
           </div>
         </div>
       )}
 
-      {/* Hvala i rezultati */}
+      {/* PORUKA + REZULTATI */}
       {submitted && (
-        <div style={{ marginTop: "2rem" }}>
-          <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem" }}>{getThankYouMessage()}</h2>
+        <div style={{ marginTop: "2rem", padding: "1rem" }}>
+          <h2 style={{ fontSize: "1.4rem", marginBottom: "1rem", color: "#000" }}>{getThankYouMessage()}</h2>
+
           {canShowResults ? (
             <div style={{ maxWidth: "400px", margin: "0 auto" }}>
               <Pie data={data} />
             </div>
           ) : (
-            <p style={{ fontSize: "1rem" }}>Rezultati će biti objavljeni u sredu u 20h.</p>
+            <p style={{ fontSize: "1rem", color: "#000" }}>Rezultati će biti objavljeni u sredu u 20h.</p>
           )}
         </div>
       )}
