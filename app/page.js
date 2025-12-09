@@ -19,7 +19,7 @@ export default function Home() {
 
   const handleNext = () => {
     if (!name || !surname) {
-      alert("Unesi ime i prezime!");
+      alert("Bitte geben Sie Ihren Vor- und Nachnamen ein!");
       return;
     }
     setStep(2);
@@ -27,7 +27,7 @@ export default function Home() {
 
   const handleVote = async (option) => {
     if (!name || !surname) {
-      alert("Unesi ime i prezime!");
+      alert("Bitte geben Sie Ihren Vor- und Nachnamen ein!");
       return;
     }
     setVote(option);
@@ -42,7 +42,7 @@ export default function Home() {
       const data = await res.json();
       if (data.error) alert(data.error);
     } catch (err) {
-      console.error("Greška prilikom slanja glasa:", err);
+      console.error("Fehler beim Senden der Stimme:", err);
     }
   };
 
@@ -56,7 +56,7 @@ export default function Home() {
         const data = await res.json();
         setResults(data.results);
       } catch (err) {
-        console.error("Greška prilikom čitanja glasova:", err);
+        console.error("Fehler beim Laden der Stimmen:", err);
       }
     };
 
@@ -66,10 +66,10 @@ export default function Home() {
   }, []);
 
   const data = {
-    labels: ["Dečak", "Devojčica"],
+    labels: ["Junge", "Mädchen"],
     datasets: [
       {
-        label: "Glasovi",
+        label: "Stimmen",
         data: [results.optionA, results.optionB],
         backgroundColor: ["#36A2EB", "#FF6384"],
       },
@@ -77,11 +77,12 @@ export default function Home() {
   };
 
   const getThankYouMessage = () => {
-    if (vote === "optionA") 
-      return "Znam da bi možda voleo/a da sam Dečak ali ja sam DEVOJČICA ❤️";
-    if (vote === "optionB") 
-      return "Jeste, ja sam DEVOJČICA ❤️";
-    return `Hvala na glasu, ${name} ${surname}!`;
+    if (vote === "optionA") {
+      return "Ich weiß, dass Sie vielleicht hoffen, dass ich ein Junge bin… aber ich bin ein MÄDCHEN ❤️";
+    } else if (vote === "optionB") {
+      return "Ja, ich bin ein MÄDCHEN ❤️";
+    }
+    return `Danke für Ihre Stimme, ${name} ${surname}!`;
   };
 
   return (
@@ -92,7 +93,7 @@ export default function Home() {
         backgroundSize: "cover",
         backgroundPosition: "center",
         fontFamily: "Arial, sans-serif",
-        color: "#000", // CRNI TEKST
+        color: "#000",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -101,51 +102,118 @@ export default function Home() {
         flexDirection: "column",
       }}
     >
-      {/* PRVA STRANA - unos imena i prezimena */}
+      {/* Seite 1 – Eingabe */}
       {!submitted && step === 1 && (
-        <div style={{ display: "flex", flexDirection: "column", width: "100%", maxWidth: "400px" }}>
-          <h1 style={{ fontSize: "2rem", marginBottom: "1.5rem", color: "#000" }}>Unesite ime i prezime</h1>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "90%",
+            maxWidth: "500px",
+          }}
+        >
+          <h1 style={{ fontSize: "2.5rem", marginBottom: "2rem", color: "#000" }}>
+            Bitte Vor- und Nachnamen eingeben
+          </h1>
           <input
-            placeholder="Ime"
+            placeholder="Vorname"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            style={{ fontSize: "1.1rem", marginBottom: "1rem", padding: "0.6rem", textAlign: "center", width: "100%", borderRadius: "8px", border: "1px solid #ccc" }}
+            style={{
+              fontSize: "1.2rem",
+              marginBottom: "1rem",
+              padding: "0.5rem",
+              textAlign: "center",
+              width: "100%",
+            }}
           />
           <input
-            placeholder="Prezime"
+            placeholder="Nachname"
             value={surname}
             onChange={(e) => setSurname(e.target.value)}
-            style={{ fontSize: "1.1rem", marginBottom: "1.5rem", padding: "0.6rem", textAlign: "center", width: "100%", borderRadius: "8px", border: "1px solid #ccc" }}
+            style={{
+              fontSize: "1.2rem",
+              marginBottom: "2rem",
+              padding: "0.5rem",
+              textAlign: "center",
+              width: "100%",
+            }}
           />
           <button
             onClick={handleNext}
-            style={{ fontSize: "1.2rem", padding: "0.6rem 2rem", cursor: "pointer", borderRadius: "10px", border: "none", backgroundColor: "#36A2EB", color: "#000", fontWeight: "bold" }}
+            style={{
+              fontSize: "1.2rem",
+              padding: "0.5rem 2rem",
+              cursor: "pointer",
+              color: "#000",
+            }}
           >
-            Dalje
+            Weiter
           </button>
         </div>
       )}
 
-      {/* DRUGA STRANA - izbor slike */}
+      {/* Seite 2 – Bilder */}
       {!submitted && step === 2 && (
-        <div style={{ width: "100%", maxWidth: "600px" }}>
-          <h2 style={{ marginBottom: "1.5rem", fontSize: "1.5rem", color: "#000" }}>Šta misliš šta je? (klikni na sliku)</h2>
-          <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
-            {/* Leva - Dečak */}
-            <div style={{ flex: 1 }}>
-              <h3 style={{ marginBottom: "0.5rem", color: "#000" }}>Dečak</h3>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            minHeight: "100vh",
+            justifyContent: "center",
+          }}
+        >
+          <h2 style={{ color: "#000", marginBottom: "2rem", fontSize: "1.8rem" }}>
+            Was denkst du, was es ist? (Klicke auf das Bild)
+          </h2>
+
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              justifyContent: "center",
+            }}
+          >
+            {/* Linke Seite */}
+            <div
+              style={{
+                flex: 1,
+                textAlign: "center",
+              }}
+            >
+              <h3 style={{ color: "#000", marginBottom: "1rem" }}>Junge</h3>
               <img
                 src="/optionA.jpg"
-                style={{ width: "100%", maxWidth: "220px", borderRadius: "12px", cursor: "pointer" }}
+                alt="Junge"
+                style={{
+                  cursor: "pointer",
+                  width: "250px",
+                  height: "250px",
+                  objectFit: "cover",
+                }}
                 onClick={() => handleVote("optionA")}
               />
             </div>
-            {/* Desna - Devojčica */}
-            <div style={{ flex: 1 }}>
-              <h3 style={{ marginBottom: "0.5rem", color: "#000" }}>Devojčica</h3>
+
+            {/* Rechte Seite */}
+            <div
+              style={{
+                flex: 1,
+                textAlign: "center",
+              }}
+            >
+              <h3 style={{ color: "#000", marginBottom: "1rem" }}>Mädchen</h3>
               <img
                 src="/devojcica.jpg"
-                style={{ width: "100%", maxWidth: "220px", borderRadius: "12px", cursor: "pointer" }}
+                alt="Mädchen"
+                style={{
+                  cursor: "pointer",
+                  width: "250px",
+                  height: "250px",
+                  objectFit: "cover",
+                }}
                 onClick={() => handleVote("optionB")}
               />
             </div>
@@ -153,16 +221,20 @@ export default function Home() {
         </div>
       )}
 
-      {/* HVALA + REZULTATI */}
+      {/* Danke + Ergebnisse */}
       {submitted && (
-        <div style={{ marginTop: "2rem", padding: "1rem" }}>
-          <h2 style={{ fontSize: "1.4rem", marginBottom: "1rem", color: "#000" }}>{getThankYouMessage()}</h2>
+        <div style={{ marginTop: "2rem" }}>
+          <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#000" }}>
+            {getThankYouMessage()}
+          </h2>
           {canShowResults ? (
             <div style={{ maxWidth: "400px", margin: "0 auto" }}>
               <Pie data={data} />
             </div>
           ) : (
-            <p style={{ fontSize: "1rem", color: "#000" }}>Rezultati će biti objavljeni u sredu u 20h.</p>
+            <p style={{ fontSize: "1rem", color: "#000" }}>
+              Die Ergebnisse werden am Mittwoch um 20 Uhr veröffentlicht.
+            </p>
           )}
         </div>
       )}
