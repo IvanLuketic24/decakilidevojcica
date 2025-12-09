@@ -154,7 +154,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Seite 2 – Bilder */}
+      {/* Seite 2 – Bilder (Centrirana verzija) */}
       {!submitted && step === 2 && (
         <div
           style={{
@@ -163,6 +163,7 @@ export default function Home() {
             width: "100%",
             minHeight: "100vh",
             justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <h2 style={{ color: "#000", marginBottom: "2rem", fontSize: "1.8rem" }}>
@@ -172,17 +173,14 @@ export default function Home() {
           <div
             style={{
               display: "flex",
-              width: "100%",
+              gap: "2rem",
               justifyContent: "center",
+              alignItems: "center",
+              flexWrap: "wrap",
             }}
           >
-            {/* Linke Seite */}
-            <div
-              style={{
-                flex: 1,
-                textAlign: "center",
-              }}
-            >
+            {/* Junge */}
+            <div style={{ textAlign: "center" }}>
               <h3 style={{ color: "#000", marginBottom: "1rem" }}>Junge</h3>
               <img
                 src="/optionA.jpg"
@@ -197,13 +195,8 @@ export default function Home() {
               />
             </div>
 
-            {/* Rechte Seite */}
-            <div
-              style={{
-                flex: 1,
-                textAlign: "center",
-              }}
-            >
+            {/* Mädchen */}
+            <div style={{ textAlign: "center" }}>
               <h3 style={{ color: "#000", marginBottom: "1rem" }}>Mädchen</h3>
               <img
                 src="/devojcica.jpg"
