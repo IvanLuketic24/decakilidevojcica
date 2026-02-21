@@ -11,20 +11,30 @@ export default function Dashboard() {
   async function handleSave() {
     setStatus("Čuvam...");
 
-    const res = await fetch("/api/profile", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ slug, message, avatarUrl }),
-    });
+    try {
+      const res = await fetch("/api/profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          slug,
+          message,
+          avatarUrl,
+        }),
+      });
 
-    const data = await res.json().catch(() => ({}));
+      const data = await res.json().catch(() => ({}));
 
-    if (!res.ok) {
-      setStatus(data.error || "Greška");
-      return;
+      if (!res.ok) {
+        setStatus(data.error || "Greška");
+        return;
+      }
+
+      setStatus("Sačuvano ✅");
+    } catch (err) {
+      setStatus("Greška u konekciji");
     }
-
-    setStatus("Sačuvano ✅");
   }
 
   return (
@@ -33,7 +43,7 @@ export default function Dashboard() {
 
       <div style={{ display: "grid", gap: 12, marginTop: 16 }}>
         <label style={{ display: "grid", gap: 6 }}>
-          <span>Slug (tvoj URL)</span>
+          <span>Slug</span>
           <input
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
@@ -66,15 +76,21 @@ export default function Dashboard() {
           />
         </label>
 
-        {avatarUrl ? (
+        {avatarUrl && (
           <img
             src={avatarUrl}
-            alt="avatar preview"
-            style={{ width: 96, height: 96, borderRadius: 999, objectFit: "cover" }}
+            alt="preview"
+            style={{
+              width: 96,
+              height: 96,
+              borderRadius: "50%",
+              objectFit: "cover",
+            }}
           />
-        ) : null}
+        )}
 
         <button
+          type="button"
           onClick={handleSave}
           style={{
             padding: 12,
@@ -87,7 +103,7 @@ export default function Dashboard() {
           Sačuvaj
         </button>
 
-        {status ? <p>{status}</p> : null}
+        {status && <p>{status}</p>}
       </div>
     </div>
   );
