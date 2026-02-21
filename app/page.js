@@ -1,11 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-import { supabase } from "@/lib/supabase";
-
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { useState } from "react";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -13,10 +8,6 @@ export default function Home() {
   const [vote, setVote] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [step, setStep] = useState(1);
-  const [results, setResults] = useState({ optionA: 0, optionB: 0 });
-  const [canShowResults, setCanShowResults] = useState(false);
-
-  const releaseTime = new Date("2025-11-26T20:00:00");
 
   const handleNext = () => {
     if (!name || !surname) {
@@ -31,61 +22,30 @@ export default function Home() {
       alert("Bitte geben Sie Ihren Vor- und Nachnamen ein!");
       return;
     }
+
     setVote(option);
     setSubmitted(true);
 
     try {
-      const { error } = await supabase.from("votes").insert([
-        { name, surname, vote: option }
-      ]);
-
-      if (error) alert(error.message);
+      const res = await fetch("/api/vote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, surname, vote: option }),
+      });
+      const data = await res.json();
+      if (data?.error) alert(data.error);
     } catch (err) {
       console.error("Fehler beim Senden der Stimme:", err);
     }
   };
 
-  useEffect(() => {
-    const now = new Date();
-    setCanShowResults(now >= releaseTime);
-
-    const fetchResults = async () => {
-      try {
-        const { data, error } = await supabase.from("votes").select("*");
-        if (error) throw error;
-
-        const optionA = data?.filter(v => v.vote === "optionA").length ?? 0;
-        const optionB = data?.filter(v => v.vote === "optionB").length ?? 0;
-
-        setResults({ optionA, optionB });
-      } catch (err) {
-        console.error("Fehler beim Laden der Stimmen:", err);
-      }
-    };
-
-    fetchResults();
-    const interval = setInterval(fetchResults, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const data = {
-    labels: ["Junge", "Mädchen"],
-    datasets: [
-      {
-        label: "Stimmen",
-        data: [results?.optionA ?? 0, results?.optionB ?? 0],
-        backgroundColor: ["#36A2EB", "#FF6384"],
-      },
-    ],
-  };
-
   const getThankYouMessage = () => {
     if (vote === "optionA") {
-      return "Ich weiß, dass Sie vielleicht hoffen, dass ich ein Junge bin… aber ich bin ein MÄDCHEN ❤️";
+      return "Hvala! Glasao/la si za dečaka.";
     } else if (vote === "optionB") {
-      return "Ja, ich bin ein MÄDCHEN ❤️";
+      return "Hvala! Glasao/la si za devojčicu.";
     }
-    return `Danke für Ihre Stimme, ${name} ${surname}!`;
+    return `Hvala na glasu, ${name} ${surname}!`;
   };
 
   return (
@@ -105,7 +65,6 @@ export default function Home() {
         flexDirection: "column",
       }}
     >
-      {/* Seite 1 – Eingabe */}
       {!submitted && step === 1 && (
         <div
           style={{
@@ -117,10 +76,11 @@ export default function Home() {
           }}
         >
           <h1 style={{ fontSize: "2.5rem", marginBottom: "2rem", color: "#000" }}>
-            Bitte Vor- und Nachnamen eingeben
+            Unesi ime i prezime
           </h1>
+
           <input
-            placeholder="Vorname"
+            placeholder="Ime"
             value={name}
             onChange={(e) => setName(e.target.value)}
             style={{
@@ -131,8 +91,9 @@ export default function Home() {
               width: "100%",
             }}
           />
+
           <input
-            placeholder="Nachname"
+            placeholder="Prezime"
             value={surname}
             onChange={(e) => setSurname(e.target.value)}
             style={{
@@ -143,6 +104,7 @@ export default function Home() {
               width: "100%",
             }}
           />
+
           <button
             onClick={handleNext}
             style={{
@@ -152,12 +114,11 @@ export default function Home() {
               color: "#000",
             }}
           >
-            Weiter
+            Dalje
           </button>
         </div>
       )}
 
-      {/* Seite 2 – Bilder */}
       {!submitted && step === 2 && (
         <div
           style={{
@@ -166,25 +127,27 @@ export default function Home() {
             width: "100%",
             minHeight: "100vh",
             justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <h2 style={{ color: "#000", marginBottom: "2rem", fontSize: "1.8rem" }}>
-            Was denkst du, was es ist? (Klicke auf das Bild)
+            Šta misliš, dečak ili devojčica? (klikni na sliku)
           </h2>
 
           <div
             style={{
               display: "flex",
-              width: "100%",
+              gap: "2rem",
               justifyContent: "center",
+              alignItems: "center",
+              flexWrap: "wrap",
             }}
           >
-            {/* Linke Seite */}
-            <div style={{ flex: 1, textAlign: "center" }}>
-              <h3 style={{ color: "#000", marginBottom: "1rem" }}>Junge</h3>
+            <div style={{ textAlign: "center" }}>
+              <h3 style={{ color: "#000", marginBottom: "1rem" }}>Dečak</h3>
               <img
                 src="/optionA.jpg"
-                alt="Junge"
+                alt="Dečak"
                 style={{
                   cursor: "pointer",
                   width: "250px",
@@ -195,12 +158,11 @@ export default function Home() {
               />
             </div>
 
-            {/* Rechte Seite */}
-            <div style={{ flex: 1, textAlign: "center" }}>
-              <h3 style={{ color: "#000", marginBottom: "1rem" }}>Mädchen</h3>
+            <div style={{ textAlign: "center" }}>
+              <h3 style={{ color: "#000", marginBottom: "1rem" }}>Devojčica</h3>
               <img
                 src="/devojcica.jpg"
-                alt="Mädchen"
+                alt="Devojčica"
                 style={{
                   cursor: "pointer",
                   width: "250px",
@@ -214,21 +176,11 @@ export default function Home() {
         </div>
       )}
 
-      {/* Danke + Ergebnisse */}
       {submitted && (
         <div style={{ marginTop: "2rem" }}>
           <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#000" }}>
             {getThankYouMessage()}
           </h2>
-          {canShowResults ? (
-            <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-              <Pie data={data} />
-            </div>
-          ) : (
-            <p style={{ fontSize: "1rem", color: "#000" }}>
-              Die Ergebnisse werden am Mittwoch um 20 Uhr veröffentlicht.
-            </p>
-          )}
         </div>
       )}
     </div>
