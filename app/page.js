@@ -1,10 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Pie } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
-
-ChartJS.register(ArcElement, Tooltip, Legend);
+import { useState } from "react";
 
 export default function Home() {
   const [name, setName] = useState("");
@@ -12,10 +8,6 @@ export default function Home() {
   const [vote, setVote] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [step, setStep] = useState(1);
-  const [results, setResults] = useState({ optionA: 0, optionB: 0 });
-  const [canShowResults, setCanShowResults] = useState(false);
-
-  const releaseTime = new Date("2025-11-26T20:00:00");
 
   const handleNext = () => {
     if (!name || !surname) {
@@ -30,6 +22,7 @@ export default function Home() {
       alert("Bitte geben Sie Ihren Vor- und Nachnamen ein!");
       return;
     }
+
     setVote(option);
     setSubmitted(true);
 
@@ -40,40 +33,10 @@ export default function Home() {
         body: JSON.stringify({ name, surname, vote: option }),
       });
       const data = await res.json();
-      if (data.error) alert(data.error);
+      if (data?.error) alert(data.error);
     } catch (err) {
       console.error("Fehler beim Senden der Stimme:", err);
     }
-  };
-
-  useEffect(() => {
-    const now = new Date();
-    setCanShowResults(now >= releaseTime);
-
-    const fetchResults = async () => {
-      try {
-        const res = await fetch("/api/vote");
-        const data = await res.json();
-        setResults(data.results);
-      } catch (err) {
-        console.error("Fehler beim Laden der Stimmen:", err);
-      }
-    };
-
-    fetchResults();
-    const interval = setInterval(fetchResults, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const data = {
-    labels: ["Junge", "Mädchen"],
-    datasets: [
-      {
-        label: "Stimmen",
-        data: [results.optionA, results.optionB],
-        backgroundColor: ["#36A2EB", "#FF6384"],
-      },
-    ],
   };
 
   const getThankYouMessage = () => {
@@ -102,7 +65,7 @@ export default function Home() {
         flexDirection: "column",
       }}
     >
-      {/* Seite 1 – Eingabe */}
+      {/* Step 1 – Ime/Prezime */}
       {!submitted && step === 1 && (
         <div
           style={{
@@ -116,6 +79,7 @@ export default function Home() {
           <h1 style={{ fontSize: "2.5rem", marginBottom: "2rem", color: "#000" }}>
             Bitte Vor- und Nachnamen eingeben
           </h1>
+
           <input
             placeholder="Vorname"
             value={name}
@@ -128,6 +92,7 @@ export default function Home() {
               width: "100%",
             }}
           />
+
           <input
             placeholder="Nachname"
             value={surname}
@@ -140,6 +105,7 @@ export default function Home() {
               width: "100%",
             }}
           />
+
           <button
             onClick={handleNext}
             style={{
@@ -154,7 +120,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Seite 2 – Bilder (Centrirana verzija) */}
+      {/* Step 2 – Glasanje (2 slike) */}
       {!submitted && step === 2 && (
         <div
           style={{
@@ -179,7 +145,6 @@ export default function Home() {
               flexWrap: "wrap",
             }}
           >
-            {/* Junge */}
             <div style={{ textAlign: "center" }}>
               <h3 style={{ color: "#000", marginBottom: "1rem" }}>Junge</h3>
               <img
@@ -195,7 +160,6 @@ export default function Home() {
               />
             </div>
 
-            {/* Mädchen */}
             <div style={{ textAlign: "center" }}>
               <h3 style={{ color: "#000", marginBottom: "1rem" }}>Mädchen</h3>
               <img
@@ -214,21 +178,12 @@ export default function Home() {
         </div>
       )}
 
-      {/* Danke + Ergebnisse */}
+      {/* Final – poruka */}
       {submitted && (
         <div style={{ marginTop: "2rem" }}>
           <h2 style={{ fontSize: "1.5rem", marginBottom: "1rem", color: "#000" }}>
             {getThankYouMessage()}
           </h2>
-          {canShowResults ? (
-            <div style={{ maxWidth: "400px", margin: "0 auto" }}>
-              <Pie data={data} />
-            </div>
-          ) : (
-            <p style={{ fontSize: "1rem", color: "#000" }}>
-              Die Ergebnisse werden am Mittwoch um 20 Uhr veröffentlicht.
-            </p>
-          )}
         </div>
       )}
     </div>
