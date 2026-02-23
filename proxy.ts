@@ -1,15 +1,16 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default clerkMiddleware({
-  publicRoutes: [
-    "/",                 // ako imaš landing
-    "/p/:path*",         // friend flow (javno)
-    "/sign-in(.*)",
-    "/sign-up(.*)",
-    "/api/public/:path*", // ako budeš imao javne API rute
-  ],
+const isPublicRoute = createRouteMatcher([
+  "/", // ako imaš landing
+  "/p(.*)", // friend flow (javno)
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+]);
+
+export default clerkMiddleware((auth, req) => {
+  if (!isPublicRoute(req)) auth().protect();
 });
 
 export const config = {
-  matcher: ["/((?!_next|.*\\..*).*)", "/(api|trpc)(.*)"],
+  matcher: ["/((?!_next|.*\\..*).*)"],
 };
