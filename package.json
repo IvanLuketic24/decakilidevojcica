@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.38.1",
-    "@supabase/supabase-js": "^2.87.1",
+    "@supabase/supabase-js": "^2.97.0",
+    "@upstash/redis": "^1.36.2",
     "@vercel/kv": "^3.0.0",
     "chart.js": "^4.5.1",
     "next": "^16.0.7",
