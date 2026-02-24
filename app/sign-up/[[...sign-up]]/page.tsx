@@ -15,6 +15,7 @@ export default function Page() {
         <p style={{ color: "rgba(255,255,255,0.75)", margin: 0, fontSize: 14 }}>
           Dobrodošli,
         </p>
+
         <h1
           style={{
             color: "white",
@@ -64,7 +65,7 @@ export default function Page() {
                 formFieldRow__lastName: { display: "none" },
 
                 formFieldLabel: {
-                  color: "rgba(255,255,255,0.90)",
+                  color: "rgba(255,255,255,0.9)",
                   fontSize: 14,
                   marginBottom: 6,
                 },
@@ -76,21 +77,28 @@ export default function Page() {
                   color: "white",
                   padding: "14px 14px",
                   fontSize: 16,
-                  outline: "none",
                 },
 
-                // ✅ JASNO VIDLJIVO POLJE ZA VERIFICATION CODE
-                formFieldInput__verificationCode: {
+                /* ✅ OTP (6 kockica za kod) */
+                otpCodeField: {
+                  gap: "10px",
+                  justifyContent: "center",
+                },
+
+                otpCodeFieldInput: {
+                  width: "48px",
+                  height: "56px",
                   background: "white",
                   color: "#111827",
+                  borderRadius: "14px",
                   border: "2px solid #ffffff",
-                  borderRadius: "16px",
-                  padding: "16px 14px",
-                  fontSize: 20,
+                  fontSize: "22px",
                   fontWeight: 700,
-                  letterSpacing: "0.4em",
-                  textAlign: "center",
-                  boxShadow: "0 0 0 2px rgba(255,255,255,0.4)",
+                },
+
+                otpCodeFieldInput__focus: {
+                  outline: "none",
+                  boxShadow: "0 0 0 3px rgba(255,255,255,0.4)",
                 },
 
                 formResendCodeLink: {
@@ -101,7 +109,7 @@ export default function Page() {
 
                 formButtonPrimary: {
                   borderRadius: "16px",
-                  marginTop: 12,
+                  marginTop: 16,
                   padding: "12px 14px",
                   fontSize: 16,
                   fontWeight: 800,
