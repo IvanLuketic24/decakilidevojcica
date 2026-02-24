@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { createClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -7,7 +7,6 @@ const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 function supabaseServer() {
-  // service role ako postoji (preporučeno), inače anon (ako RLS dozvoljava)
   return createClient(SUPABASE_URL, SERVICE_ROLE ?? ANON_KEY, {
     auth: { persistSession: false },
   });
@@ -24,13 +23,17 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    const clerkUser = await currentUser();
+    const owner_first_name = clerkUser?.firstName ?? null;
+    const owner_last_name = clerkUser?.lastName ?? null;
+
     const supabase = supabaseServer();
 
     // 1) find my page
     const { data: existingPage, error: pageErr } = await supabase
       .from("guess_pages")
       .select(
-        "slug, actual_gender, owner_user_id, background_url, boy_image_url, girl_image_url"
+        "slug, actual_gender, owner_user_id, background_url, boy_image_url, girl_image_url, owner_first_name, owner_last_name"
       )
       .eq("owner_user_id", userId)
       .maybeSingle();
@@ -45,16 +48,17 @@ export async function GET() {
     if (!page) {
       const slug = randomSlug();
 
-      // Da ne puca ako ti schema i dalje zahteva NOT NULL:
       const { data: created, error: createErr } = await supabase
         .from("guess_pages")
         .insert({
           slug,
           owner_user_id: userId,
           actual_gender: "girl",
+          owner_first_name,
+          owner_last_name,
         })
         .select(
-          "slug, actual_gender, owner_user_id, background_url, boy_image_url, girl_image_url"
+          "slug, actual_gender, owner_user_id, background_url, boy_image_url, girl_image_url, owner_first_name, owner_last_name"
         )
         .single();
 
@@ -65,9 +69,24 @@ export async function GET() {
       page = created;
     }
 
+    // 3) Ako stranica postoji ali nema ime → upiši ga
+    if (
+      page &&
+      (!page.owner_first_name || !page.owner_last_name) &&
+      (owner_first_name || owner_last_name)
+    ) {
+      await supabase
+        .from("guess_pages")
+        .update({
+          owner_first_name,
+          owner_last_name,
+        })
+        .eq("slug", page.slug);
+    }
+
     const slug = page.slug as string;
 
-    // 3) counts
+    // 4) counts
     const { data: votes, error: votesErr } = await supabase
       .from("guess_votes")
       .select("choice")
@@ -81,7 +100,7 @@ export async function GET() {
     const girl = (votes ?? []).filter((v) => v.choice === "girl").length;
     const total = (votes ?? []).length;
 
-    // 4) voters list
+    // 5) voters list
     const { data: voters, error: votersErr } = await supabase
       .from("guess_votes")
       .select("first_name, last_name, choice, created_at")

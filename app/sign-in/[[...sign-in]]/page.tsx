@@ -12,11 +12,34 @@ export default function Page() {
       }}
     >
       <div style={{ width: "100%", maxWidth: 420 }}>
+        {/* LOGO */}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
+          <img
+            src="/icon.png"
+            alt="Dečak ili Devojčica logo"
+            style={{
+              width: 96,
+              height: 96,
+              borderRadius: 24,
+              display: "block",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+            }}
+          />
+        </div>
+
         {/* Tvoj header */}
-        <p style={{ color: "rgba(255,255,255,0.75)", margin: 0, fontSize: 14 }}>
+        <p style={{ color: "rgba(255,255,255,0.75)", margin: 0, fontSize: 14, textAlign: "center" }}>
           Dobrodošli,
         </p>
-        <h1 style={{ color: "white", fontSize: 30, fontWeight: 900, margin: "6px 0 18px" }}>
+        <h1
+          style={{
+            color: "white",
+            fontSize: 30,
+            fontWeight: 900,
+            margin: "6px 0 18px",
+            textAlign: "center",
+          }}
+        >
           Dečak ili Devojčica
         </h1>
 
@@ -80,7 +103,7 @@ export default function Page() {
         </div>
 
         {/* Tvoj link ispod */}
-        <p style={{ marginTop: 14, color: "rgba(255,255,255,0.75)" }}>
+        <p style={{ marginTop: 14, color: "rgba(255,255,255,0.75)", textAlign: "center" }}>
           Ako nemaš nalog,{" "}
           <a href="/sign-up" style={{ color: "white", textDecoration: "underline" }}>
             napravi ga ovde

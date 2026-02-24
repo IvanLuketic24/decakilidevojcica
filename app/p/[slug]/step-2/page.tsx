@@ -17,6 +17,11 @@ type Assets = {
   girl_image_url?: string | null;
 };
 
+type OwnerInfo = {
+  owner_first_name: string | null;
+  owner_last_name: string | null;
+};
+
 export default function Step2Page() {
   const router = useRouter();
   const params = useParams<{ slug: string }>();
@@ -66,6 +71,24 @@ export default function Step2Page() {
     })();
   }, [slug]);
 
+  const fetchOwnerInfo = async (): Promise<OwnerInfo> => {
+    // Uzimamo owner ime/prezime iz guess_pages po slug-u
+    const { data, error } = await supabase
+      .from("guess_pages")
+      .select("owner_first_name, owner_last_name")
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (error || !data) {
+      return { owner_first_name: null, owner_last_name: null };
+    }
+
+    return {
+      owner_first_name: (data as any).owner_first_name ?? null,
+      owner_last_name: (data as any).owner_last_name ?? null,
+    };
+  };
+
   const vote = async (choice: "boy" | "girl") => {
     const fn = firstName.trim();
     const ln = lastName.trim();
@@ -82,16 +105,32 @@ export default function Step2Page() {
 
     setLoading(true);
     try {
+      // 1) owner info (ne blokira glasanje ako failuje)
+      const owner = await fetchOwnerInfo();
+
+      // 2) insert vote
       const { error } = await supabase.from("guess_votes").insert({
         slug,
         choice,
         first_name: fn,
         last_name: ln,
+        owner_first_name: owner.owner_first_name,
+        owner_last_name: owner.owner_last_name,
       });
 
       if (error) {
-        alert(error.message);
-        return;
+        // fallback: probaj bez owner polja (ako migracija nije prošla svuda)
+        const { error: error2 } = await supabase.from("guess_votes").insert({
+          slug,
+          choice,
+          first_name: fn,
+          last_name: ln,
+        });
+
+        if (error2) {
+          alert(error2.message);
+          return;
+        }
       }
 
       localStorage.setItem(voterKey, choice);
@@ -135,9 +174,7 @@ export default function Step2Page() {
     >
       <div className="w-full max-w-md rounded-2xl border border-white/15 bg-black/40 backdrop-blur p-6 text-white shadow-lg">
         <div className="text-center">
-         <h1 className="text-2xl font-extrabold tracking-tight mt-1">
-  Šta misliš, šta sam? 👶
-</h1>
+          <h1 className="text-2xl font-extrabold tracking-tight mt-1">Šta misliš, šta sam? 👶</h1>
         </div>
 
         <div className="mt-5 grid grid-cols-2 gap-3">
