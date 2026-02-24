@@ -15,7 +15,14 @@ export default function Page() {
         <p style={{ color: "rgba(255,255,255,0.75)", margin: 0, fontSize: 14 }}>
           Dobrodošli,
         </p>
-        <h1 style={{ color: "white", fontSize: 30, fontWeight: 900, margin: "6px 0 18px" }}>
+        <h1
+          style={{
+            color: "white",
+            fontSize: 30,
+            fontWeight: 900,
+            margin: "6px 0 18px",
+          }}
+        >
           Dečak ili Devojčica
         </h1>
 
@@ -46,7 +53,12 @@ export default function Page() {
                 dividerRow: { display: "none" },
                 dividerText: { display: "none" },
 
-                card: { boxShadow: "none", background: "transparent", border: "none", padding: 0 },
+                card: {
+                  boxShadow: "none",
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                },
 
                 formFieldRow__firstName: { display: "none" },
                 formFieldRow__lastName: { display: "none" },
@@ -67,6 +79,26 @@ export default function Page() {
                   outline: "none",
                 },
 
+                // ✅ JASNO VIDLJIVO POLJE ZA VERIFICATION CODE
+                formFieldInput__verificationCode: {
+                  background: "white",
+                  color: "#111827",
+                  border: "2px solid #ffffff",
+                  borderRadius: "16px",
+                  padding: "16px 14px",
+                  fontSize: 20,
+                  fontWeight: 700,
+                  letterSpacing: "0.4em",
+                  textAlign: "center",
+                  boxShadow: "0 0 0 2px rgba(255,255,255,0.4)",
+                },
+
+                formResendCodeLink: {
+                  color: "white",
+                  textDecoration: "underline",
+                  fontWeight: 700,
+                },
+
                 formButtonPrimary: {
                   borderRadius: "16px",
                   marginTop: 12,
@@ -80,26 +112,14 @@ export default function Page() {
                 footerAction: { display: "none" },
                 footerActionLink: { display: "none" },
 
-                formResendCodeLink: {
-                  color: "rgba(255,255,255,0.90)",
-                  textDecoration: "underline",
-                  fontWeight: 700,
+                formFieldInputShowPasswordButton: {
+                  color: "rgba(255,255,255,0.85)",
                 },
 
-                formFieldInputShowPasswordButton: { color: "rgba(255,255,255,0.85)" },
-
-                formFieldInput__verificationCode: {
-                  borderRadius: "16px",
-                  border: "2px solid rgba(255,255,255,0.35)",
-                  background: "rgba(0,0,0,0.45)",
-                  color: "white",
-                  padding: "16px 14px",
-                  fontSize: 18,
-                  letterSpacing: "0.35em",
-                  textAlign: "center",
+                formFieldErrorText: {
+                  color: "#fecaca",
+                  fontWeight: 600,
                 },
-
-                formFieldErrorText: { color: "#fecaca", fontWeight: 600 },
               },
               variables: {
                 colorPrimary: "#ffffff",
@@ -113,7 +133,10 @@ export default function Page() {
 
         <p style={{ marginTop: 14, color: "rgba(255,255,255,0.75)" }}>
           Već imaš nalog?{" "}
-          <a href="/sign-in" style={{ color: "white", textDecoration: "underline" }}>
+          <a
+            href="/sign-in"
+            style={{ color: "white", textDecoration: "underline" }}
+          >
             Uloguj se
           </a>
           .
