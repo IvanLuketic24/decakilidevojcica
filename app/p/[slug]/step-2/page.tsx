@@ -146,7 +146,7 @@ export default function Step2Page() {
             onClick={() => vote("boy")}
             className="rounded-2xl border border-white/15 bg-white/5 hover:bg-white/10 transition p-4 flex flex-col items-center"
           >
-            <img src={boySrc} alt="Dečak" className="w-48 h-48 object-contain" />
+            <img src={boySrc} alt="Dečak" className="w-90 h-90 object-contain" />
             <span className="mt-3 text-base font-bold">Dečak</span>
           </button>
 
@@ -155,7 +155,7 @@ export default function Step2Page() {
             onClick={() => vote("girl")}
             className="rounded-2xl border border-white/15 bg-white/5 hover:bg-white/10 transition p-4 flex flex-col items-center"
           >
-            <img src={girlSrc} alt="Devojčica" className="w-48 h-48 object-contain" />
+            <img src={girlSrc} alt="Devojčica" className="w-90 h-90 object-contain" />
             <span className="mt-3 text-base font-bold">Devojčica</span>
           </button>
         </div>
