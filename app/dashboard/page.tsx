@@ -121,6 +121,26 @@ export default function DashboardPage() {
     alert("Link kopiran ✅");
   };
 
+  // ✅ NOVO: reset glasova
+  const resetVotes = async () => {
+    const ok = confirm("Sigurno želiš da resetuješ sve glasove? Ovo se ne može vratiti.");
+    if (!ok) return;
+
+    const res = await fetch("/api/dashboard/page/reset", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      alert(data?.error || "Greška pri resetovanju.");
+      return;
+    }
+
+    alert("Glasovi su resetovani ✅");
+    await loadMyPage();
+  };
+
   const uploadAsset = async (type: "background" | "boy" | "girl", file: File) => {
     setAssetUploading(type);
     try {
@@ -163,7 +183,6 @@ export default function DashboardPage() {
         <div>
           <div className="text-sm text-white/70">Dashboard</div>
 
-          {/* CHANGED: naslov */}
           <h1 className="text-2xl font-extrabold tracking-tight">
             <span className="text-sky-400">Dečak</span>{" "}
             <span className="text-white/90">ili</span>{" "}
@@ -180,10 +199,7 @@ export default function DashboardPage() {
         <section className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-sm">
           <h2 className="text-lg font-semibold">Podešavanje</h2>
 
-          {/* CHANGED: obrisan tekst "Ovde potvrdi tačan pol." */}
-
           <div className="mt-5">
-            {/* CHANGED: "Tačan pol bebe" -> "Pol bebe" */}
             <div className="text-sm font-medium mb-2">Pol bebe</div>
 
             <div className="grid grid-cols-2 gap-3">
@@ -236,7 +252,6 @@ export default function DashboardPage() {
                 />
               </div>
 
-              {/* CHANGED: hidden input + custom button (nema "no file chosen") */}
               <input
                 ref={bgInputRef}
                 type="file"
@@ -271,7 +286,6 @@ export default function DashboardPage() {
                   <img src={boyUrl || "/decak.png"} className="h-24 object-contain" alt="boy" />
                 </div>
 
-                {/* CHANGED: hidden input + custom button (nema "no file chosen") */}
                 <input
                   ref={boyInputRef}
                   type="file"
@@ -293,7 +307,9 @@ export default function DashboardPage() {
                   Choose File
                 </button>
 
-                {assetUploading === "boy" && <div className="mt-2 text-sm text-white/70">Uploadujem…</div>}
+                {assetUploading === "boy" && (
+                  <div className="mt-2 text-sm text-white/70">Uploadujem…</div>
+                )}
               </div>
 
               <div className="rounded-xl border border-white/10 bg-black/20 p-4">
@@ -307,7 +323,6 @@ export default function DashboardPage() {
                   />
                 </div>
 
-                {/* CHANGED: hidden input + custom button (nema "no file chosen") */}
                 <input
                   ref={girlInputRef}
                   type="file"
@@ -329,7 +344,9 @@ export default function DashboardPage() {
                   Choose File
                 </button>
 
-                {assetUploading === "girl" && <div className="mt-2 text-sm text-white/70">Uploadujem…</div>}
+                {assetUploading === "girl" && (
+                  <div className="mt-2 text-sm text-white/70">Uploadujem…</div>
+                )}
               </div>
             </div>
           </div>
@@ -398,6 +415,14 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
+
+            {/* ✅ NOVO: dugme ispod liste sa glasovima */}
+            <button
+              onClick={resetVotes}
+              className="mt-3 w-full rounded-xl border border-red-400/40 bg-red-500/10 py-3 text-sm font-extrabold text-red-200 hover:border-red-300/70 hover:bg-red-500/15"
+            >
+              Resetuj glasove
+            </button>
           </div>
         </section>
       </div>
