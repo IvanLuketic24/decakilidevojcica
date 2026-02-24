@@ -12,7 +12,6 @@ export default function Page() {
       }}
     >
       <div style={{ width: "100%", maxWidth: 420 }}>
-        {/* Tvoj header */}
         <p style={{ color: "rgba(255,255,255,0.75)", margin: 0, fontSize: 14 }}>
           Dobrodošli,
         </p>
@@ -20,13 +19,12 @@ export default function Page() {
           Dečak ili Devojčica
         </h1>
 
-        {/* Clerk */}
         <div
           style={{
             borderRadius: 18,
-            padding: 16,
-            background: "rgba(255,255,255,0.06)",
-            border: "1px solid rgba(255,255,255,0.12)",
+            padding: 18,
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.16)",
             backdropFilter: "blur(10px)",
           }}
         >
@@ -37,53 +35,82 @@ export default function Page() {
             afterSignUpUrl="/dashboard"
             appearance={{
               elements: {
-                // ukloni Clerk header/footer/branding tekstove
                 header: { display: "none" },
                 headerTitle: { display: "none" },
                 headerSubtitle: { display: "none" },
                 footer: { display: "none" },
                 badge: { display: "none" },
 
-                // ukloni social + "or"
                 socialButtonsBlock: { display: "none" },
                 socialButtons: { display: "none" },
                 dividerRow: { display: "none" },
                 dividerText: { display: "none" },
 
-                // wrapper
                 card: { boxShadow: "none", background: "transparent", border: "none", padding: 0 },
 
-                // sakrij First/Last name redove
                 formFieldRow__firstName: { display: "none" },
                 formFieldRow__lastName: { display: "none" },
 
-                // polja - belo
-                formFieldLabel: { color: "rgba(255,255,255,0.85)" },
-                formFieldInput: {
-                  borderRadius: "14px",
-                  border: "1px solid rgba(0,0,0,0.12)",
-                  background: "white",
-                  color: "#111827",
+                formFieldLabel: {
+                  color: "rgba(255,255,255,0.90)",
+                  fontSize: 14,
+                  marginBottom: 6,
                 },
 
-                // dugme
-                formButtonPrimary: { borderRadius: "14px", marginTop: 10 },
+                formFieldInput: {
+                  borderRadius: "16px",
+                  border: "1px solid rgba(255,255,255,0.22)",
+                  background: "rgba(0,0,0,0.35)",
+                  color: "white",
+                  padding: "14px 14px",
+                  fontSize: 16,
+                  outline: "none",
+                },
 
-                // sakrij Clerk-ov "Već imaš nalog?" (mi imamo svoj ispod)
+                formButtonPrimary: {
+                  borderRadius: "16px",
+                  marginTop: 12,
+                  padding: "12px 14px",
+                  fontSize: 16,
+                  fontWeight: 800,
+                  background: "white",
+                  color: "#0b0f19",
+                },
+
                 footerAction: { display: "none" },
                 footerActionLink: { display: "none" },
+
+                formResendCodeLink: {
+                  color: "rgba(255,255,255,0.90)",
+                  textDecoration: "underline",
+                  fontWeight: 700,
+                },
+
+                formFieldInputShowPasswordButton: { color: "rgba(255,255,255,0.85)" },
+
+                formFieldInput__verificationCode: {
+                  borderRadius: "16px",
+                  border: "2px solid rgba(255,255,255,0.35)",
+                  background: "rgba(0,0,0,0.45)",
+                  color: "white",
+                  padding: "16px 14px",
+                  fontSize: 18,
+                  letterSpacing: "0.35em",
+                  textAlign: "center",
+                },
+
+                formFieldErrorText: { color: "#fecaca", fontWeight: 600 },
               },
               variables: {
-                colorPrimary: "#111827",
+                colorPrimary: "#ffffff",
                 colorBackground: "transparent",
                 colorText: "white",
-                borderRadius: "14px",
+                borderRadius: "16px",
               },
             }}
           />
         </div>
 
-        {/* Tvoj link ispod */}
         <p style={{ marginTop: 14, color: "rgba(255,255,255,0.75)" }}>
           Već imaš nalog?{" "}
           <a href="/sign-in" style={{ color: "white", textDecoration: "underline" }}>
