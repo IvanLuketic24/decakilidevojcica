@@ -18,8 +18,8 @@ export default function Page() {
           src="/icon.png"
           alt="Dečak ili Devojčica logo"
           style={{
-            width: 384,
-            height: 384,
+            width: 214,
+            height: 214,
             objectFit: "contain",
             margin: "0 auto 24px",
             display: "block",
@@ -85,7 +85,7 @@ export default function Page() {
 
                 formFieldLabel: {
                   color: "rgba(255,255,255,0.9)",
-                  paddingLeft: "12px",
+                  paddingLeft: "16px",
                 },
 
                 formFieldInput: {
