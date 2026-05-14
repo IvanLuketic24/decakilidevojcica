@@ -9,7 +9,12 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-type NameLS = { first_name?: string; last_name?: string; firstName?: string; lastName?: string };
+type NameLS = {
+  first_name?: string;
+  last_name?: string;
+  firstName?: string;
+  lastName?: string;
+};
 
 type Assets = {
   background_url?: string | null;
@@ -33,7 +38,6 @@ export default function Step2Page() {
   const [loading, setLoading] = useState(false);
   const [assets, setAssets] = useState<Assets>({});
   const [assetsLoaded, setAssetsLoaded] = useState(false);
-  const [v, setV] = useState<number>(() => Date.now());
 
   const voterKey = useMemo(() => {
     const fn = firstName.trim().toLowerCase();
@@ -44,7 +48,6 @@ export default function Step2Page() {
   useEffect(() => {
     if (!slug) return;
 
-    // ime iz step-1
     try {
       const raw = localStorage.getItem(`guess:${slug}`);
       if (raw) {
@@ -54,38 +57,37 @@ export default function Step2Page() {
       }
     } catch {}
 
-    // assets
     setAssetsLoaded(false);
+
     (async () => {
-      const res = await fetch(`/api/public/page?slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
+      const res = await fetch(`/api/public/page?slug=${encodeURIComponent(slug)}`, {
+        cache: "no-store",
+      });
+
       const data = await res.json().catch(() => ({}));
+
       if (res.ok) {
         setAssets({
           background_url: data.background_url ?? null,
           boy_image_url: data.boy_image_url ?? null,
           girl_image_url: data.girl_image_url ?? null,
         });
-        setV(Date.now()); // cache-buster
       }
+
       setAssetsLoaded(true);
     })();
   }, [slug]);
 
   const fetchOwnerInfo = async (): Promise<OwnerInfo> => {
-    // Uzimamo owner ime/prezime iz guess_pages po slug-u
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("guess_pages")
       .select("owner_first_name, owner_last_name")
       .eq("slug", slug)
       .maybeSingle();
 
-    if (error || !data) {
-      return { owner_first_name: null, owner_last_name: null };
-    }
-
     return {
-      owner_first_name: (data as any).owner_first_name ?? null,
-      owner_last_name: (data as any).owner_last_name ?? null,
+      owner_first_name: (data as any)?.owner_first_name ?? null,
+      owner_last_name: (data as any)?.owner_last_name ?? null,
     };
   };
 
@@ -104,11 +106,10 @@ export default function Step2Page() {
     }
 
     setLoading(true);
+
     try {
-      // 1) owner info (ne blokira glasanje ako failuje)
       const owner = await fetchOwnerInfo();
 
-      // 2) insert vote
       const { error } = await supabase.from("guess_votes").insert({
         slug,
         choice,
@@ -119,7 +120,6 @@ export default function Step2Page() {
       });
 
       if (error) {
-        // fallback: probaj bez owner polja (ako migracija nije prošla svuda)
         const { error: error2 } = await supabase.from("guess_votes").insert({
           slug,
           choice,
@@ -144,14 +144,8 @@ export default function Step2Page() {
 
   if (!assetsLoaded) {
     return (
-      <main className="min-h-screen w-full flex items-center justify-center px-4 bg-[#0b0f19] text-white">
-        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 backdrop-blur p-6 shadow-sm">
-          <div className="text-sm text-white/70">Učitavam…</div>
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <div className="h-56 rounded-2xl bg-white/5 border border-white/10" />
-            <div className="h-56 rounded-2xl bg-white/5 border border-white/10" />
-          </div>
-        </div>
+      <main className="min-h-screen flex items-center justify-center bg-[#0b0f19] text-white">
+        Učitavam...
       </main>
     );
   }
@@ -160,51 +154,45 @@ export default function Step2Page() {
   const boy = assets.boy_image_url || "/decak.png";
   const girl = assets.girl_image_url || "/devojcica.png";
 
-  const boySrc = `${boy}${boy.includes("?") ? "&" : "?"}v=${v}`;
-  const girlSrc = `${girl}${girl.includes("?") ? "&" : "?"}v=${v}`;
-
   return (
     <main
-      className="min-h-screen w-full flex items-center justify-center px-4"
+      className="min-h-screen flex items-center justify-center px-4"
       style={{
         backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      <div className="w-full max-w-md rounded-2xl border border-white/15 bg-black/40 backdrop-blur p-6 text-white shadow-lg">
-        <div className="text-center">
-          <h1 className="text-2xl font-extrabold tracking-tight mt-1">Šta misliš, šta sam? 👶</h1>
-        </div>
+      <div className="w-full max-w-md bg-black/40 text-white p-6 rounded-2xl">
+        <h1 className="text-2xl font-bold text-center">
+          Šta misliš, šta sam? 👶
+        </h1>
 
         <div className="mt-5 grid grid-cols-2 gap-3">
           <button
             disabled={loading}
             onClick={() => vote("boy")}
-            className="rounded-2xl border border-white/15 bg-white/5 hover:bg-white/10 transition p-4 flex flex-col items-center"
+            className="p-4 rounded-xl bg-white/10"
           >
-            <img src={boySrc} alt="Dečak" className="w-90 h-90 object-contain" />
-            <span className="mt-3 text-base font-bold">Dečak</span>
+            <img src={boy} alt="boy" className="w-full h-40 object-contain" />
+            <div className="text-center mt-2 font-bold">Dečak</div>
           </button>
 
           <button
             disabled={loading}
             onClick={() => vote("girl")}
-            className="rounded-2xl border border-white/15 bg-white/5 hover:bg-white/10 transition p-4 flex flex-col items-center"
+            className="p-4 rounded-xl bg-white/10"
           >
-            <img src={girlSrc} alt="Devojčica" className="w-90 h-90 object-contain" />
-            <span className="mt-3 text-base font-bold">Devojčica</span>
+            <img src={girl} alt="girl" className="w-full h-40 object-contain" />
+            <div className="text-center mt-2 font-bold">Devojčica</div>
           </button>
         </div>
 
-        {loading && <div className="mt-4 text-center text-sm text-white/70">Upisujem glas…</div>}
-
-        <button
-          onClick={() => router.push(`/p/${slug}/step-1`)}
-          className="mt-5 w-full rounded-xl border border-white/20 py-2 text-sm font-semibold hover:border-white/40"
-        >
-          Nazad
-        </button>
+        {loading && (
+          <p className="text-center mt-4 text-sm opacity-70">
+            Upisujem glas...
+          </p>
+        )}
       </div>
     </main>
   );
