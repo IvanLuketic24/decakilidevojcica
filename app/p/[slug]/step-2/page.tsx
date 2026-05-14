@@ -151,8 +151,9 @@ export default function Step2Page() {
   }
 
   const bg = assets.background_url || "/step1-bg.png";
-  const boy = assets.boy_image_url || "/decak.png";
-  const girl = assets.girl_image_url || "/devojcica.png";
+
+  const boy = assets.boy_image_url || "/decak-v2.png";
+  const girl = assets.girl_image_url || "/devojcica-v2.png";
 
   return (
     <main
